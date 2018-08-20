@@ -100,19 +100,19 @@
     NSLog(@"liveStateDidChange: %ld", state);
     switch (state) {
         case LFLiveReady:
-            _stateLabel.text = @"未连接";
+            _stateLabel.text = @"not connected";
             break;
         case LFLivePending:
-            _stateLabel.text = @"连接中";
+            _stateLabel.text = @"connecting";
             break;
         case LFLiveStart:
-            _stateLabel.text = @"已连接";
+            _stateLabel.text = @"connected";
             break;
         case LFLiveError:
-            _stateLabel.text = @"连接错误";
+            _stateLabel.text = @"connection error";
             break;
         case LFLiveStop:
-            _stateLabel.text = @"未连接";
+            _stateLabel.text = @"not connected";
             break;
         default:
             break;
@@ -140,7 +140,11 @@
         
         /***   默认分辨率368 ＊ 640  音频：44.1 iphone6以上48  双声道  方向竖屏 ***/
         
-        _session = [[LFLiveSession alloc] initWithAudioConfiguration:[LFLiveAudioConfiguration defaultConfiguration] videoConfiguration:[LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Medium2 landscape:NO]];
+//        LFLiveVideoConfiguration *config = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Medium2];
+        
+        _session = [[LFLiveSession alloc] initWithAudioConfiguration:[LFLiveAudioConfiguration defaultConfiguration]
+                                                  videoConfiguration:[LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Medium2]];
+        
         
         
         /**    自己定制单声道  */
@@ -205,7 +209,7 @@
          */
         
         
-        /**    自己定制高质量音频128K 分辨率设置为720*1280 方向横屏  */
+        /**    Customized high quality audio 128K resolution set to 720*1280 horizontal screen  */
         
         /*
          LFLiveAudioConfiguration *audioConfiguration = [LFLiveAudioConfiguration new];
@@ -244,8 +248,8 @@
 
 - (UILabel*)stateLabel{
     if(!_stateLabel){
-        _stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 80, 40)];
-        _stateLabel.text = @"未连接";
+        _stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 100, 40)];
+        _stateLabel.text = @"not connected";
         _stateLabel.textColor = [UIColor whiteColor];
         _stateLabel.font = [UIFont boldSystemFontOfSize:14.f];
     }
@@ -309,20 +313,21 @@
         _startLiveButton.layer.cornerRadius = _startLiveButton.height/2;
         [_startLiveButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_startLiveButton.titleLabel setFont:[UIFont systemFontOfSize:16]];
-        [_startLiveButton setTitle:@"开始直播" forState:UIControlStateNormal];
+        [_startLiveButton setTitle:@"Start Live" forState:UIControlStateNormal];
         [_startLiveButton setBackgroundColor:[UIColor colorWithRed:50 green:32 blue:245 alpha:1]];
         _startLiveButton.exclusiveTouch = YES;
         __weak typeof(self) _self = self;
         [_startLiveButton addBlockForControlEvents:UIControlEventTouchUpInside block:^(id sender) {
             _self.startLiveButton.selected = !_self.startLiveButton.selected;
             if(_self.startLiveButton.selected){
-                [_self.startLiveButton setTitle:@"结束直播" forState:UIControlStateNormal];
+                [_self.startLiveButton setTitle:@"End live" forState:UIControlStateNormal];
                 LFLiveStreamInfo *stream = [LFLiveStreamInfo new];
-                stream.url = @"rtmp://live.hkstv.hk.lxdns.com:1935/live/stream799";
-                //stream.url = @"rtmp://daniulive.com:1935/live/stream2399";
+
+                stream.url = @"rtmp://10.0.1.60/live/lm";
+
                 [_self.session startLive:stream];
             }else{
-                [_self.startLiveButton setTitle:@"开始直播" forState:UIControlStateNormal];
+                [_self.startLiveButton setTitle:@"Start Live" forState:UIControlStateNormal];
                 [_self.session stopLive];
             }
         }];
